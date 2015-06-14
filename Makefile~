@@ -1,0 +1,89 @@
+CC 	= g++ -std=c++0x        #The c++ compiler to use
+CFLAGS  = -c -Wall -g -lm	        #The optimize code
+
+all: polar
+
+polar: generator.o channelPolarization.o polarEncoding.o noise.o polarDecoding.o sorting.o listdecoding.o analysis.o SC.o rewritting.o noisywem.o  vector.o ksubset.o combination.o matrix.o reedmuller.o hdDecoding.o bch3.o concatenatedPolar.o rscoding.o crc16.o binaryHeap.o stackDecoding.o  main.o
+	$(CC)  generator.o channelPolarization.o polarEncoding.o noise.o polarDecoding.o sorting.o  listdecoding.o analysis.o  SC.o rewritting.o noisywem.o   vector.o ksubset.o  combination.o matrix.o reedmuller.o hdDecoding.o  bch3.o concatenatedPolar.o rscoding.o crc16.o binaryHeap.o stackDecoding.o main.o  -o polar
+
+generator.o: generator.cpp generator.h
+	$(CC) $(CFLAGS) generator.cpp
+
+channelPolarization.o: channelPolarization.cpp channelPolarization.h DoublyLinkedHeap.h
+	$(CC) $(CFLAGS) channelPolarization.cpp
+
+polarEncoding.o: generator.h generator.cpp channelPolarization.h channelPolarization.cpp polarEncoding.h polarEncoding.cpp
+	$(CC) $(CFLAGS) polarEncoding.cpp
+
+noise.o: noise.cpp noise.h
+	$(CC) $(CFLAGS) noise.cpp
+
+sorting.o: sorting.cpp sorting.h
+	$(CC) $(CFLAGS) sorting.cpp
+
+listdecoding.o: listdecoding.cpp listdecoding.h channelPolarization.cpp channelPolarization.h sorting.cpp sorting.h crc16.cpp crc16.h
+	$(CC) $(CFLAGS) listdecoding.cpp
+
+polarDecoding.o: generator.h generator.cpp channelPolarization.h channelPolarization.cpp polarEncoding.h polarEncoding.cpp  polarDecoding.h polarDecoding.cpp 
+	$(CC) $(CFLAGS) polarDecoding.cpp
+
+analysis.o: analysis.h analysis.cpp
+	$(CC) $(CFLAGS) analysis.cpp
+
+SC.o: SC.cpp SC.h analysis.cpp analysis.h channelPolarization.cpp generator.cpp generator.h channelPolarization.h polarEncoding.cpp polarEncoding.h polarDecoding.cpp polarDecoding.h listdecoding.cpp listdecoding.h
+	$(CC) $(CFLAGS) SC.cpp
+
+rewritting.o: rewritting.cpp rewritting.h analysis.cpp analysis.h channelPolarization.cpp channelPolarization.h SC.cpp SC.h generator.cpp generator.h listdecoding.cpp listdecoding.h
+	$(CC) $(CFLAGS) rewritting.cpp
+
+noisywem.o: noisywem.cpp noisywem.h channelPolarization.cpp channelPolarization.h
+	$(CC) $(CFLAGS) noisywem.cpp
+
+matrix.o: matrix.h matrix.c common.h
+	$(CC) $(CFLAGS) matrix.c
+
+combination.o:matrix.h matrix.c common.h combination.h combination.c
+	$(CC) $(CFLAGS) combination.c
+
+ksubset.o:common.h combination.h ksubset.h
+	$(CC) $(CFLAGS) ksubset.c
+
+vector.o: vector.c vector.h
+	$(CC) $(CFLAGS) vector.c
+
+reedmuller.o: matrix.h matrix.c ksubset.h ksubset.c vector.h vector.c common.h reedmuller.h reedmuller.c
+	$(CC) $(CFLAGS) reedmuller.c
+
+hdDecoding.o: hdDecoding.h hdDecoding.cpp generator.h generator.cpp polarEncoding.h polarEncoding.cpp common.h vector.c vector.h ksubset.c ksubset.h combination.c combination.h matrix.c matrix.h reedmuller.c reedmuller.h
+	$(CC) $(CFLAGS) hdDecoding.cpp
+
+bch3.o: bch.h bch3.c noise.h noise.cpp
+	$(CC) $(CFLAGS) bch3.c
+
+rscoding.o:rscoding.h rscoding.cpp generator.h generator.cpp
+	$(CC) $(CFLAGS) rscoding.cpp
+
+concatenatedPolar.o: concatenatedPolar.cpp concatenatedPolar.h bch.h bch3.c analysis.h analysis.cpp channelPolarization.h channelPolarization.cpp generator.h generator.cpp rscoding.h rscoding.cpp
+	$(CC) $(CFLAGS) concatenatedPolar.cpp
+
+crc16.o: crc16.cpp crc16.h
+	$(CC) $(CFLAGS) crc16.cpp
+
+binaryHeap.o: binaryHeap.cpp binaryHeap.h
+	$(CC) $(CFLAGS) binaryHeap.cpp
+
+stackDecoding.o: stackDecoding.h stackDecoding.cpp binaryHeap.h binaryHeap.cpp priorityQueue.h
+	$(CC) $(CFLAGS) stackDecoding.cpp 
+
+main.o: main.cpp generator.cpp generator.h channelPolarization.cpp channelPolarization.h DoublyLinkedHeap.h polarEncoding.h polarEncoding.cpp noise.cpp noise.h polarDecoding.cpp polarDecoding.h sorting.cpp sorting.h listdecoding.cpp listdecoding.h analysis.h analysis.cpp SC.h SC.cpp rewritting.cpp rewritting.h noisywem.h noisywem.cpp vector.h vector.c ksubset.c ksubset.h combination.c combination.h matrix.h matrix.c reedmuller.h reedmuller.c hdDecoding.h hdDecoding.cpp bch.h bch3.c concatenatedPolar.h concatenatedPolar.cpp crc16.h crc16.cpp stackDecoding.h stackDecoding.cpp
+	$(CC) $(CFLAGS) main.cpp
+
+#
+#clean up
+#
+
+clean:
+	rm *.o 
+	rm polar >/dev/null 2>&1
+	
+
